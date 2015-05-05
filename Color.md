@@ -1,17 +1,17 @@
 Class header file: [BWAPI/Color.h](http://code.google.com/p/bwapi/source/browse/trunk/bwapi/include/BWAPI/Color.h#)
 
-Starcraft uses a 256 color palette to render everything, so the colors available for draw shapes using BWAPI is limited to the colors available in the [Palette](#Palette.md).
+Starcraft uses a 256 color palette to render everything, so the colors available for draw shapes using BWAPI is limited to the colors available in the [Palette](#Palette).
 
 Methods:
-  * Color(int id) - Create a color using the specified index from the Broodwar color [palette](#Palette.md).
-  * Color(int red, int green, int blue) - Create a color using the color in the [palette](#Palette.md) that is closest to the RGB color specified. This will check a number of colors in the pallet to see which is closest to the specified color so this function is relatively slow.
-  * int getID() - Return the index of the color in the color [palette](#Palette.md).
+  * Color(int id) - Create a color using the specified index from the Broodwar color [palette](#Palette).
+  * Color(int red, int green, int blue) - Create a color using the color in the [palette](#Palette) that is closest to the RGB color specified. This will check a number of colors in the pallet to see which is closest to the specified color so this function is relatively slow.
+  * int getID() - Return the index of the color in the color [palette](#Palette).
   * int red() - Return the red component of the color.
   * int green() - Return the green component of the color.
   * int blue() - Return the blue component of the color.
 
 ### Colors ###
-While any color from the [palette](#Palette.md) can be used, the following colors are available as shortcuts:
+While any color from the [palette](#Palette) can be used, the following colors are available as shortcuts:
 
   * Red
   * Blue
@@ -30,13 +30,13 @@ While any color from the [palette](#Palette.md) can be used, the following color
 ### Palette ###
 The 256 color palette used by Starcraft: BroodWar:
 
-> ![http://bwapi.googlecode.com/svn/wiki/colorPalette.gif](http://bwapi.googlecode.com/svn/wiki/colorPalette.gif)
+> ![colorPalette.gif](colorPalette.gif)
 
 The blue sets outlined in green are interchangable parts of the palette. They may change based on the tileset and continually change if color cycling is enabled.
 
 ### Text Color ###
 Examples using text color:
-```
+```cpp
 printf("\x03" "This is yellow text. " "\x06" "This is red text.");
 printf("%cThis is yellow text. %cThis is red text.", 0x03, 0x06);
 ```
