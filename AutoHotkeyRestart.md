@@ -3,10 +3,10 @@ This page deals with automating game restarts while battling your own AI.
 
 
 # Setting up `StarCraft` #
-> 2 machines (or Virtual Machines of course), one that will create the game that we will call _host_, the other that will connect to it that we will call _client_.
+2 machines (or Virtual Machines of course), one that will create the game that we will call _host_, the other that will connect to it that we will call _client_.
 
-  * The host should have a _bwapi.ini_ with things like:
-```
+ * The host should have a _bwapi.ini_ with things like:
+```ini
 ai_dll = C:\StarCraft\AI\BroodwarBotQ\Release\HostModule.dll ; your host dll
 auto_menu = LAN
 lan_mode = Local Area Network (UDP)
@@ -14,8 +14,8 @@ auto_restart = ON
 map = maps\BroodWar\Tournament\SC-t1maps\dragoons.scm ; the map on which you want to play
 ```
 
-  * The client should have a _bwapi.ini_ with things like:
-```
+ * The client should have a _bwapi.ini_ with things like:
+```ini
 ai_dll = C:\StarCraft\AI\BroodwarBotQ\Release\ClientModule.dll ; your client dll
 auto_menu = LAN
 lan_mode = Local Area Network (UDP)
@@ -23,13 +23,13 @@ auto_restart = ON
 map = ; auto-joins games
 ```
 
-  * Launch both and launch the game (host, then client, then you click OK on the game lobby menu). It should work but stop in the same state (game lobby). That's why we want to click on OK automatically.
+ * Launch both and launch the game (host, then client, then you click OK on the game lobby menu). It should work but stop in the same state (game lobby). That's why we want to click on OK automatically.
 
 # Setting up `AutoHotkey` #
-  * On your **host**, [Grab and install AutoHotkey](http://www.autohotkey.com/download/) (I took the Basic version and it works).
-  * Use AutoIt3 Windows Spy (installed with AutoHotkey) to find the _In Active Window_ coordinates of the OK button in the game lobby. It helps to have your starcraft either full screen of windowed and pinned down (in the upper right icons of W-Mode). You can freeze the current mouse position for AutoIt3 Windows Spy on Windows XP by doing _Alt+Maj+Tab_.
-  * Create a text file ending in .ahk and paste something like this **while changing the mouse coordinates to your "In Active Window" ones**:
-```
+ * On your **host**, [Grab and install AutoHotkey](http://www.autohotkey.com/download/) (I took the Basic version and it works).
+ * Use AutoIt3 Windows Spy (installed with AutoHotkey) to find the _In Active Window_ coordinates of the OK button in the game lobby. It helps to have your starcraft either full screen of windowed and pinned down (in the upper right icons of W-Mode). You can freeze the current mouse position for AutoIt3 Windows Spy on Windows XP by doing _Alt+Maj+Tab_.
+ * Create a text file ending in .ahk and paste something like this **while changing the mouse coordinates to your "In Active Window" ones**:
+```ahk
 Sleep 6000
 WinGetActiveTitle, PreviouslyActive
 MouseGetPos, xpos, ypos
@@ -42,13 +42,13 @@ IfWinExist, %PreviouslyActive%
     WinActivate
 MouseMove, %xpos%, %ypos%, 0
 ```
-> This waits 6 secondes avec been called (in _onEnd(bool isWinner)_, see next section) so that we can skip the menus and have the client joined back the game. **You may need to change that for more if your network is slow.**
+This waits 6 secondes avec been called (in _onEnd(bool isWinner)_, see next section) so that we can skip the menus and have the client joined back the game. **You may need to change that for more if your network is slow.**
 
-  * You can right click on the .ahk file and create an executable with _Compile Script_ (AutoHotkey compiles it). You will use this executable in the next section. I called mine _startGame.exe_.
+ * You can right click on the .ahk file and create an executable with _Compile Script_ (AutoHotkey compiles it). You will use this executable in the next section. I called mine _startGame.exe_.
 
 # Tuning your code #
-  * All that's left is calling the AutoHotkey process that will restart the game when the games end. This code has to be in the **host** code (`HostModule.dll` in the example above). The client will reconnect automatically (thanks to _map =_. Here is the snippet of code I use. I put _myRestartGame()_ in my utils and then just call it in _onEnd(bool isWinner)_.
-```
+ * All that's left is calling the AutoHotkey process that will restart the game when the games end. This code has to be in the **host** code (`HostModule.dll` in the example above). The client will reconnect automatically (thanks to _map =_. Here is the snippet of code I use. I put _myRestartGame()_ in my utils and then just call it in _onEnd(bool isWinner)_.
+```cpp
 void myRestartGame()
 {
   /////////// Launch an AutoHotkey that will click on "OK" in 10 sec
@@ -79,4 +79,4 @@ void myRestartGame()
   CloseHandle(ProcessInformation.hThread);
 }
 ```
-  * Now, you only have to click on OK in the game lobby once, the first time you start the series of games. The bots will continue playing automatically, as long as you want (and don't crash ;)).
+ * Now, you only have to click on OK in the game lobby once, the first time you start the series of games. The bots will continue playing automatically, as long as you want (and don't crash ;)).
