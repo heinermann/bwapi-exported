@@ -1,8 +1,8 @@
 # Introduction #
 
-> The tournament module is a RELEASE-only module that is specifically designed to control and monitor the flow of a tournament game.
+The tournament module is a RELEASE-only module that is specifically designed to control and monitor the flow of a tournament game.
 
-> BWAPI's Tournament mode is enabled when a tournament module has been specified in the configuration and loaded by BWAPI successfully.
+BWAPI's Tournament mode is enabled when a tournament module has been specified in the configuration and loaded by BWAPI successfully.
 
 # Features #
   * Can restrict AI modules from making some specific calls, either partially or completely.
@@ -13,8 +13,8 @@
   * Reduces the amount of spam ("BWAPI r#### using...") by allowing only one BWAPI client to broadcast tournament information.
 
 # Configuration #
-> Simply compile the tournament module as you would an AI module and in the configuration under `[ai]`, add `tournament=` and have it specify the location of your tournament module. An example configuration is below.
-```
+Simply compile the tournament module as you would an AI module and in the configuration under `[ai]`, add `tournament=` and have it specify the location of your tournament module. An example configuration is below.
+```ini
 [ai]
 ai = bwapi-data\AI\Aiur.dll
 ai_dbg = bwapi-data\AI\DevAIModule.dll
@@ -25,16 +25,17 @@ tournament = bwapi-data\AI\MyTournamentModule.dll
 ```
 
 # Callbacks #
-> In addition to the normal AI callbacks, the tournament module has its own unique callbacks not available to an AI module.
+In addition to the normal AI callbacks, the tournament module has its own unique callbacks not available to an AI module.
 
-> ## onAction ##
-> ```c++
-bool onAction(BWAPI::Tournament::ActionID actionType, void *parameter = NULL);```
-
-> Using an enumeration for actionType, and the parameter for that action (casted to a pointer for the appropriate parameter if a parameter exists, or ignored if none exist for that enum member), you can allow AI commands by returning `true`, or have BWAPI ignore them by returning `false`.
-
-> The enumeration in BWAPI::Tournament:: is as follows:
+## onAction ##
+```c++
+bool onAction(BWAPI::Tournament::ActionID actionType, void *parameter = NULL);
 ```
+
+Using an enumeration for actionType, and the parameter for that action (casted to a pointer for the appropriate parameter if a parameter exists, or ignored if none exist for that enum member), you can allow AI commands by returning `true`, or have BWAPI ignore them by returning `false`.
+
+The enumeration in BWAPI::Tournament:: is as follows:
+```cpp
     enum ActionID
     {
       EnableFlag,
@@ -53,10 +54,10 @@ bool onAction(BWAPI::Tournament::ActionID actionType, void *parameter = NULL);``
     };
 ```
 
-> The ExampleTournamentModule has already layed out a switch statement with all of the enumerations, but this article will review a couple of them without the switch statement.
+The ExampleTournamentModule has already layed out a switch statement with all of the enumerations, but this article will review a couple of them without the switch statement.
 
-> The following prevents an AI module from using [enableFlag](Game#enableFlag.md) to enable CompleteMapInformation.
-```
+The following prevents an AI module from using [enableFlag](Game#enableFlag.md) to enable CompleteMapInformation.
+```cpp
 // The definition of the onAction callback
 bool ExampleTournamentModule::onAction(int actionType, void *parameter)
 {
@@ -71,8 +72,8 @@ bool ExampleTournamentModule::onAction(int actionType, void *parameter)
 }
 ```
 
-> Another example converts all [printf](Game#printf.md) statements to uppercase and remaps it to [sendText](Game#sendText.md) to be broadcasted globally.
-```
+Another example converts all [printf](Game#printf.md) statements to uppercase and remaps it to [sendText](Game#sendText.md) to be broadcasted globally.
+```cpp
 // The definition of the onAction callback
 bool ExampleTournamentModule::onAction(int actionType, void *parameter)
 {
@@ -92,16 +93,17 @@ bool ExampleTournamentModule::onAction(int actionType, void *parameter)
 }
 ```
 
-> It is important to note that the tournament module does not restrict calls in itself. This includes calls in ALL the tournament module's callbacks.
+It is important to note that the tournament module does not restrict calls in itself. This includes calls in ALL the tournament module's callbacks.
 
-> ## onFirstAdvertisement ##
-> ```c++
-void onFirstAdvertisement();```
-
-> When more than one BWAPI player is in a game, it will broadcast a tournament message with a delay based on the current player's ID. After this message has been broadcasted, the other players running BWAPI will not repeat it. The player that broadcasted the message first will call this function, and the other players will ignore it.
-
-> Again, an example is provided, but here is another.
+## onFirstAdvertisement ##
+```c++
+void onFirstAdvertisement();
 ```
+
+When more than one BWAPI player is in a game, it will broadcast a tournament message with a delay based on the current player's ID. After this message has been broadcasted, the other players running BWAPI will not repeat it. The player that broadcasted the message first will call this function, and the other players will ignore it.
+
+Again, an example is provided, but here is another.
+```cpp
 void ExampleTournamentModule::onFirstAdvertisement()
 {
   Broodwar->sendText("I'm the leader, so I will be the one doing the talking.");
